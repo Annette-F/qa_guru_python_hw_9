@@ -1,29 +1,35 @@
-from selene import browser, have
-import os
+from pages.form_page import StudentRegistrationPage
 
 
-def test_filling_and_sending_input():
-    browser.open('/automation-practice-form')
+def test_student_registration_form():
+    registration_page = StudentRegistrationPage()
+    registration_page.open()
 
-    browser.element('#firstName').type('Anna')
-    browser.element('#lastName').type('Fedorova')
-    browser.element('#userEmail').type('email@mail.com')
-    browser.element('[for=gender-radio-2]').click()
-    browser.element('#userNumber').type('9001234567')
-    browser.element('#dateOfBirthInput').click()
-    browser.element('.react-datepicker__year-select').element('[value = "1982"]').click()
-    browser.element('.react-datepicker__month-select').element('[value = "2"]').click()
-    browser.element('.react-datepicker__day--018').click()
-    browser.element('#subjectsInput').type('comp').press_enter()
-    browser.element('[for=hobbies-checkbox-1]').click()
-    browser.element('[for=hobbies-checkbox-2]').click()
-    browser.element('#uploadPicture').send_keys(os.path.abspath('photo.png'))
-    browser.element('#currentAddress').type('Saint-Petersburg, 190000')
-    browser.element('#react-select-3-input').type('NCR').press_enter()
-    browser.element('#react-select-4-input').type('Delhi').press_enter()
-    browser.element('#submit').click()
-    browser.element('#example-modal-sizes-title-lg').should(have.text('Thanks for submitting the form'))
-    browser.element('.table').all('td').even.should(have.exact_texts(
-        'Anna Fedorova', 'email@mail.com', 'Female', '9001234567', '18 March,1982',
-        'Computer Science', 'Sports, Reading', 'photo.png', 'Saint-Petersburg, 190000', 'NCR Delhi'))
+    # WHEN
+    registration_page.type_first_name('Anna')
+    registration_page.type_last_name('Fedorova')
+    registration_page.type_email('email@mail.com')
+    registration_page.select_gender('Female')
+    registration_page.type_user_number('9001234567')
+    registration_page.fill_date_of_birth('1982', 'March', '18')
+    registration_page.type_subject('Computer Science')
+    registration_page.type_hobbies('Sports', 'Reading')
+    registration_page.upload_photo('photo.png')
+    registration_page.type_address('Saint-Petersburg, 190000')
+    registration_page.type_state('NCR')
+    registration_page.type_city('Delhi')
+    registration_page.element_submit_registration_form()
 
+    # THEN
+    registration_page.should_have_registered_user_with(
+        'Anna Fedorova',
+        'email@mail.com',
+        'Female',
+        '9001234567',
+        '18 March,1982',
+        'Computer Science',
+        'Sports, Reading',
+        'photo.png',
+        'Saint-Petersburg, 190000',
+        'NCR Delhi'
+    )
