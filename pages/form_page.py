@@ -82,4 +82,3 @@ class StudentRegistrationPage:
         self.type_state(student.state)
         self.type_city(student.city)
         self.element_submit_registration_form()
-
